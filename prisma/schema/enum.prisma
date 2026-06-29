@@ -1,0 +1,12 @@
+
+// enum file
+enum Activestatus{
+  ACTIVE
+  BLOCKED
+}
+
+enum Role{
+  USER
+  MODERATOR
+  ADMIN
+}

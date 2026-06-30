@@ -1,13 +1,9 @@
 import bcrypt from "bcryptjs";
 import { prisma } from "../../lib/prisma";
 import config from "../../config";
+import { RegisterUserPayload } from "./user.interface";
 
-interface RegisterUserPayload {
-    name: string;
-    email: string;
-    password: string;
-    profile_photo?: string;
-}
+
 
 const insertUserIntoDb = async(payload:RegisterUserPayload)=>{
     const { name, email, password, profile_photo } = payload;

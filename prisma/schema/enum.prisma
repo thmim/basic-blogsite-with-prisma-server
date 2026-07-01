@@ -1,12 +1,22 @@
-
 // enum file
-enum Activestatus{
+enum Activestatus {
   ACTIVE
   BLOCKED
 }
 
-enum Role{
+enum Role {
   USER
   MODERATOR
   ADMIN
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum CommentStatus {
+  APPROVED
+  REJECT
 }

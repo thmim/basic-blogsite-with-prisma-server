@@ -1,10 +1,11 @@
-model Profiles{
-    id String @id @default(uuid())
-    author Users @relation(fields: [user_id],references: [id]) // puro user object ta ekhane ace
-    user_id String @unique //ekhane ace shudu user ar id
-    profile_photo String?
-    bio String?
-    created_at DateTime @default(now())
-    updated_at DateTime @updatedAt
-    @@map("profiles")
+model Profiles {
+  id            String   @id @default(uuid())
+  author        Users    @relation(fields: [user_id], references: [id]) // puro user object ta ekhane ace
+  user_id       String   @unique //ekhane ace shudu user ar id
+  profile_photo String?
+  bio           String?
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  @@map("profiles")
 }

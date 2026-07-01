@@ -38,7 +38,31 @@ const getMyPostFromDb = () => {
 
 }
 
-const getPostByIdFromDb = () => {
+const getPostByIdFromDb = async(postId:string) => {
+    const post = await prisma.post.findUniqueOrThrow({
+        where:{
+            id:postId
+        }
+    })
+
+    const updateViewCountPost = await prisma.post.update({
+        where:{
+            id:postId
+        },
+        data:{
+            views:{
+                increment:1
+            }
+            
+        },
+        include:{
+            author:{
+                omit:{password:true}
+            },
+            comments:true
+        }
+    })
+    return updateViewCountPost;
 
 }
 

@@ -6,5 +6,9 @@ export default{
     port:process.env.PORT,
     database_url:process.env.DATABASE_URL,
     app_url:process.env.APP_URL,
-    bcrypt_salt_round:process.env.BCRYPT_SALT_ROUND
+    bcrypt_salt_round:process.env.BCRYPT_SALT_ROUND,
+    jwt_acces_secret:process.env.JWT_ACCESS_SECRET!,
+    jwt_refresh_secret:process.env.JWT_REFRESH_SECRET!,
+    jwt_access_expires:process.env.JWT_ACCESS_EXPIRES,
+    jwt_refresh_expires:process.env.JWT_REFRESH_EXPIRES,
 }

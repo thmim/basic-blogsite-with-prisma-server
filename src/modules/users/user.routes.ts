@@ -49,4 +49,5 @@ router.get("/me", auth(Role.ADMIN, Role.MODERATOR, Role.USER),
 //     auth(Role.ADMIN, Role.MODERATOR, Role.USER),
 //     userController.getMyProfile);
 
+router.put("/my-profile", auth(Role.ADMIN, Role.USER, Role.MODERATOR), userController.updateMyProfile);
 export const userRouter = router;

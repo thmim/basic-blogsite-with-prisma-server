@@ -24,5 +24,6 @@ app.get("/", (req: Request, res: Response) => {
 app.use("/api/user",userRouter);
 
 app.use("/api/auth",authRouter);
+// app.use("/api/user",userRouter);
 
 export default app;

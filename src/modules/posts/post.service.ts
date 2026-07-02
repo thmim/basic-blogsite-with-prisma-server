@@ -1,8 +1,9 @@
+import { CommentStatus } from "../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma"
 import { IcreatePost, IUpdatePostPayload } from "./post.interface"
 
 // create post service
-const createPostintoDb = async (payload: IcreatePost,authorId:string) => {
+const createPostintoDb = async (payload: IcreatePost, authorId: string) => {
 
     const createPost = await prisma.post.create({
         data: {
@@ -14,16 +15,16 @@ const createPostintoDb = async (payload: IcreatePost,authorId:string) => {
 
 }
 
-const getAllPostFromDb = async() => {
-    
+const getAllPostFromDb = async () => {
+
     const posts = await prisma.post.findMany({
-        include:{
-            author:{
-                omit:{
-                    password:true
+        include: {
+            author: {
+                omit: {
+                    password: true
                 }
             },
-            comments:true
+            comments: true
         }
     })
     return posts;
@@ -34,78 +35,105 @@ const getPostWithStatsFromDb = () => {
 
 }
 
-const getMyPostFromDb = async(authorId:string) => {
+const getMyPostFromDb = async (authorId: string) => {
     console.log(authorId)
     const findMyPost = await prisma.post.findMany({
-        where:{
+        where: {
             authorId
         },
-        
-        orderBy:{
-            createdAt:"desc"
+
+        orderBy: {
+            createdAt: "desc"
         },
-        include:{
-            author:{
-                omit:{
-                    password:true
+        include: {
+            author: {
+                omit: {
+                    password: true
                 }
             },
-            comments:true,
-            _count:{
-                select:{
-                    comments:true
+            comments: true,
+            _count: {
+                select: {
+                    comments: true
                 }
             },
-            
+
         }
     })
-    console.log(findMyPost)
+
     return findMyPost;
 }
 
-const getPostByIdFromDb = async(postId:string) => {
-    const post = await prisma.post.findUniqueOrThrow({
-        where:{
-            id:postId
-        }
+const getPostByIdFromDb = async (postId: string) => {
+
+    const transactionResult = await prisma.$transaction(async (tx) => {
+        await tx.post.update({
+            where: {
+                id: postId
+            },
+            data: {
+                views: {
+                    increment: 1
+                }
+
+            }
+        });
+        
+
+        const post = await tx.post.findUniqueOrThrow({
+            where: {
+                id: postId
+            },
+
+            include: {
+                author: {
+                    omit: {
+                        password: true
+                    }
+                },
+
+                comments: {
+                    where: {
+                        status: CommentStatus.APPROVED
+                    },
+
+                    orderBy: {
+                        createdAt: "desc"
+                    }
+                },
+
+                _count: {
+                    select: {
+                        comments: true
+                    }
+                }
+            }
+        })
+
+        return post;
     })
 
-    const updateViewCountPost = await prisma.post.update({
-        where:{
-            id:postId
-        },
-        data:{
-            views:{
-                increment:1
-            }
-            
-        },
-        include:{
-            author:{
-                omit:{password:true}
-            },
-            comments:true
-        }
-    })
-    return updateViewCountPost;
+    return transactionResult;
+
+
 
 }
 
-const updatePostFromDb = async(payload:IUpdatePostPayload,postId:string,authorId:string,isAdmin:boolean) => {
+const updatePostFromDb = async (payload: IUpdatePostPayload, postId: string, authorId: string, isAdmin: boolean) => {
 
     const post = await prisma.post.findUniqueOrThrow({
-        where:{
-            id:postId
+        where: {
+            id: postId
         }
     })
-    if(!isAdmin && authorId !== post.authorId){
+    if (!isAdmin && authorId !== post.authorId) {
         throw new Error("you are not the owner of this post")
     }
     const result = await prisma.post.update({
-        where : {
-            id : postId
+        where: {
+            id: postId
         },
-        data : payload,
+        data: payload,
         include: {
             author: {
                 omit: {
@@ -115,7 +143,7 @@ const updatePostFromDb = async(payload:IUpdatePostPayload,postId:string,authorId
             comments: true
         }
     })
-return result;
+    return result;
 }
 
 const deletePostFromDb = async (postId: string, authorId: string, isAdmin: boolean) => {
@@ -130,11 +158,11 @@ const deletePostFromDb = async (postId: string, authorId: string, isAdmin: boole
     }
 
     await prisma.post.delete({
-        where : {
-            id : postId
+        where: {
+            id: postId
         }
     })
-    
+
 
 }
 

@@ -9,7 +9,7 @@ router.post("/", auth(Role.ADMIN,Role.USER,Role.MODERATOR) ,postController.creat
 
 router.get("/",postController.getAllPost);
 
-router.get("/stats", auth(Role.ADMIN) ,postController.getPostWithStats);
+router.get("/stats", auth(Role.ADMIN,Role.USER) ,postController.getPostWithStats);
 
 router.get("/my-posts", auth(Role.ADMIN,Role.USER) ,postController.getMyPost);
 

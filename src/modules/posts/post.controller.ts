@@ -36,7 +36,7 @@ const getPostWithStats = catchAsync(async(req:Request,res:Response,next:NextFunc
 
 const getMyPost = catchAsync(async(req:Request,res:Response,next:NextFunction)=>{
     const authorId = req.user?.id;
-    console.log(authorId)
+    
     const result = await postServices.getMyPostFromDb(authorId as string)
     console.log(result)
     sendResponse(res,{
@@ -62,9 +62,40 @@ const getPostById = catchAsync(async(req:Request,res:Response,next:NextFunction)
 
 })
 const updatePost = catchAsync(async(req:Request,res:Response,next:NextFunction)=>{
+    const payload = req.body;
+    const postId = req.params.postId;
+    const authorId = req.user?.id;
+    const isAdmin = req.user?.role === "ADMIN";
+     if (!postId) {
+        throw new Error("Post Id Required In Params")
+    }
+
+    const result = await postServices.updatePostFromDb(payload,postId as string,authorId as string,isAdmin);
+    sendResponse(res,{
+        success:true,
+        statusCode:httpStatus.OK,
+        message:"post updated successfully",
+        data:result
+    })
 
 })
 const deletePost = catchAsync(async(req:Request,res:Response,next:NextFunction)=>{
+    const authorId = req.user?.id
+    const isAdmin = req.user?.role === "ADMIN";
+
+    const postId = req.params.postId;
+    if (!postId) {
+        throw new Error("Post Id Required In Params")
+    }
+
+    await postServices.deletePostFromDb(postId as string, authorId as string, isAdmin)
+
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: "Post deleted successfully",
+        data: null
+    })
 
 })
 

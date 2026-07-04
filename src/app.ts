@@ -10,12 +10,15 @@ import { postRoute } from "./modules/posts/post.route";
 import { comentRoute } from "./modules/coments/coment.route";
 import { notFound } from "./middleware/notfound";
 import { globalErrorHandler } from "./middleware/globalErrorHandler";
+import { subscriptionRoute } from "./modules/subscription/subscription.route";
 
 const app: Application = express();
 app.use(cors({
     origin: config.app_url,
     credentials: true,
 }))
+
+app.use("/api/subscription/webhooks",express.raw({type: 'application/json'}))
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -31,7 +34,7 @@ app.use("/api/user",userRouter);
 app.use("/api/auth",authRouter);
 app.use("/api/posts",postRoute);
 app.use("/api/coments",comentRoute);
-
+app.use("/api/subscription",subscriptionRoute);
 // route not found error handler middleware
 app.use(notFound);
 // global error handler
